@@ -16,16 +16,34 @@ class Name(Field):
 
 class Phone(Field):
     def __init__(self, value):
-        if len(value) != 10 or not value.isdigit():
+        self._value = None
+        self.value = value
+
+    @property
+    def value(self):
+        return self._value
+
+    @value.setter
+    def value(self, new_value):
+        if len(new_value) != 10 or not new_value.isdigit():
             raise ValueError("Phone number must be 10 digits.")
-        super().__init__(value)
+        self._value = new_value
 
 
 class Birthday(Field):
     def __init__(self, value):
-        if not isinstance(value, datetime):
+        self._value = None
+        self.value = value
+
+    @property
+    def value(self):
+        return self._value
+
+    @value.setter
+    def value(self, new_value):
+        if not isinstance(new_value, datetime):
             raise ValueError("Birthday must be a datetime object.")
-        super().__init__(value)
+        self._value = new_value
 
 
 class Record:
