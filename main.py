@@ -77,13 +77,12 @@ class Record:
     def days_to_birthday(self):
         if not self.birthday:
             return None
-        now = datetime.now()
-        next_birthday = datetime(now.year, self.birthday.value.month,
+        next_birthday = datetime(datetime.now().year, self.birthday.value.month,
                                  self.birthday.value.day)
-        if now > next_birthday:
-            next_birthday = datetime(now.year + 1, self.birthday.value.month,
+        if datetime.now() > next_birthday:
+            next_birthday = datetime(datetime.now().year + 1, self.birthday.value.month,
                                      self.birthday.value.day)
-        return (next_birthday - now).days
+        return (next_birthday - datetime.now()).days
 
     def __str__(self):
         return f"""Contact name: {self.name.value},
@@ -108,15 +107,6 @@ class AddressBook(UserDict):
     def iterator(self, n):
         self.current_page = 0
         self.page_size = n
-
-    def __iter__(self):
-        return self
-
-    def __next__(self):
-        if self.current_page * self.page_size >= len(self.data):
-            raise StopIteration
-        data_slice = dict(list(self.data.items())
-                          [self.current_page * self.page_size:
-                           (self.current_page + 1) * self.page_size])
-        self.current_page += 1
-        return data_slice
+        while self.current_page < len(self.data):
+            yield list(self.data.items())[self.current_page:self.current_page + self.page_size]
+            self.current_page += self.page_size
